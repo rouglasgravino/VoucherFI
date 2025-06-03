@@ -1,0 +1,1023 @@
+<!DOCTYPE html>
+<html lang="pt-br"> <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="VoucherFI: Transforme seus vouchers padrão Ubiquiti UniFi em um design minimalista e elegante. Gere folhas de vouchers personalizadas para impressão de forma simples e rápida.">
+    
+    <title id="pageTitle">VoucherFI</title>
+    <link rel="icon" href="favicon.svg" type="image/svg+xml">
+    <link rel="alternate icon" href="favicon.ico" type="image/x-icon">
+    <style>
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+            margin: 0; 
+            padding: 20px; 
+            background-color: #f0f2f5; 
+            color: #1c1e21; 
+            font-size: 14px; 
+            line-height: 1.5;
+        }
+        .container { 
+            max-width: 650px; 
+            margin: 20px auto; 
+            background-color: #fff; 
+            padding: 20px 30px 30px 30px; 
+            border-radius: 12px; 
+            box-shadow: 0 6px 16px rgba(0,0,0,0.12); 
+        }
+        #language-selector-container {
+            text-align: right;
+            margin-bottom: 20px; 
+        }
+        #lang-switcher {
+            padding: 8px 10px; 
+            border-radius: 6px;
+            border: 1px solid #ccd0d5;
+            background-color: #fff;
+            font-size: 13px;
+            cursor: pointer;
+        }
+        header {
+            text-align: center;
+            margin-bottom: 35px; 
+            padding-bottom: 25px;
+            border-bottom: 1px solid #e7e7e7; 
+        }
+        header h1 { 
+            color: #0d6efd; 
+            margin-bottom: 10px; 
+            font-size: 30px; 
+            font-weight: 700;
+        }
+        header p { 
+            color: #555; 
+            font-size: 16px; 
+            line-height: 1.65;
+        }
+        .form-section { 
+            margin-bottom: 30px; 
+        }
+        label, .layout-selector-label { 
+            display: flex; 
+            align-items: center;
+            margin-bottom: 10px; 
+            font-weight: 600; 
+            color: #333; 
+            font-size: 15px;
+        }
+        input[type="text"], 
+        input[type="file"] {
+            width: 100%; 
+            padding: 12px 14px; 
+            margin-bottom: 5px; 
+            border: 1px solid #d0d7de; 
+            border-radius: 6px;
+            font-size: 14px;
+            box-sizing: border-box; 
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        input[type="text"]:focus,
+        input[type="file"]:focus {
+            border-color: #0d6efd;
+            box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.25); 
+            outline: none;
+        }
+        input[type="file"] {
+            padding: 10px 12px; 
+        }
+        input[type="file"]:disabled {
+            background-color: #e9ecef; 
+            cursor: not-allowed;
+            opacity: 0.8;
+        }
+
+        button#generate-pdf-button {
+            background-color: #198754; 
+            color: white; 
+            padding: 14px 22px; 
+            border: none; 
+            border-radius: 6px; 
+            cursor: pointer; 
+            font-size: 17px; 
+            font-weight: 600;
+            transition: background-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out; 
+            display: block; 
+            width: 100%;
+            margin-top: 25px; 
+            box-shadow: 0 2px 4px rgba(0,0,0,0.075);
+        }
+        button#generate-pdf-button:hover { 
+            background-color: #157347; 
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        button#generate-pdf-button:active {
+            background-color: #146c43;
+        }
+        button#generate-pdf-button:disabled {
+            background-color: #adb5bd; 
+            cursor: not-allowed;
+            opacity: 0.65;
+            box-shadow: none;
+        }
+        #logo-preview-container { 
+            margin-top: 10px; 
+            text-align: center; 
+            width: 200px; 
+            height: 150px; 
+            border: 2px dashed #d0d7de; 
+            padding: 5px; 
+            border-radius:6px; 
+            background-color: #f8f9fa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 10px;
+            box-sizing: border-box;
+            overflow: hidden; 
+        }
+        #logo-preview-container.has-image { 
+            border-style: solid; 
+            border-color: #0d6efd; 
+            background-color: #fff;
+        }
+        #voucher-logo-preview { 
+            max-width: 100%; 
+            max-height: 100%; 
+            display: none; 
+            object-fit: contain; 
+        }
+        #logo-placeholder-text {
+            color:#6c757d; 
+            font-size:12px; 
+            padding: 5px;
+        }
+        .info-text { 
+            font-size: 12px; 
+            color: #606770; 
+            margin-top: 4px; 
+            margin-bottom: 15px; 
+        }
+        .char-count {
+             font-size: 11px; color: #6c757d; text-align: right; margin-bottom: 10px; height: 1em; 
+        }
+        .status-message { 
+            text-align:center; 
+            font-style: italic; 
+            margin:20px 0; 
+            padding: 12px 15px; 
+            border-radius: 6px; 
+            display:none; 
+            font-size: 13px; 
+        }
+        .processing { 
+            color: #004085; 
+            background-color: #cce5ff; 
+            border-left: 4px solid #007bff; 
+        }
+        .success { 
+            color: #0f5132; 
+            background-color: #d1e7dd; 
+            border-left: 4px solid #198754; 
+        }
+        .error { 
+            color: #842029; 
+            background-color: #f8d7da; 
+            border-left: 4px solid #dc3545; 
+        }
+        .info-icon {
+            width: 16px; 
+            height: 16px;
+            margin-left: 6px; 
+            cursor: help;
+            opacity: 0.6; 
+            vertical-align: middle; 
+            transition: opacity 0.2s;
+        }
+        .info-icon:hover {
+            opacity: 1;
+        }
+        .tooltip {
+            position: relative;
+            display: inline-flex; 
+            align-items: center;
+        }
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            width: 240px; 
+            background-color: #212529; 
+            color: #f8f9fa; 
+            text-align: left; 
+            border-radius: 6px;
+            padding: 10px 12px; 
+            position: absolute;
+            z-index: 1070; 
+            bottom: 140%; 
+            left: 50%;
+            transform: translateX(-50%); 
+            opacity: 0;
+            transition: opacity 0.3s ease-in-out;
+            font-size: 12px;
+            font-weight: normal;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            pointer-events: none; 
+        }
+        .tooltip .tooltiptext::after { 
+            content: "";
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            margin-left: -5px;
+            border-width: 5px;
+            border-style: solid;
+            border-color: #212529 transparent transparent transparent;
+        }
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+        #progress-bar-container {
+            width: 100%;
+            background-color: #e9ecef; 
+            border-radius: 6px; 
+            margin-top: 8px;
+            margin-bottom: 8px;
+            display: none; 
+            height: 14px; 
+            overflow: hidden; 
+        }
+        #progress-bar {
+            width: 0%;
+            height: 100%; 
+            background-color: #0d6efd; 
+            border-radius: 6px; 
+            text-align: center;
+            line-height: 14px; 
+            color: white;
+            font-size: 9px; 
+            font-weight: bold;
+            transition: width 0.3s ease-out, background-color 0.3s ease-out;
+        }
+        /* Estilos para o seletor de layout */
+        .layout-options {
+            display: flex;
+            justify-content: space-around; 
+            margin-bottom: 20px;
+            gap: 20px; 
+        }
+        .layout-option {
+            cursor: pointer;
+            padding: 15px; 
+            border: 2px solid #dee2e6; 
+            border-radius: 8px; 
+            text-align: center;
+            flex: 1; 
+            transition: border-color 0.2s, box-shadow 0.2s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #f8f9fa; 
+        }
+        .layout-option:hover {
+            border-color: #adb5bd; 
+        }
+        .layout-option.selected {
+            border-color: #0d6efd; 
+            box-shadow: 0 0 0 3px rgba(13, 110, 253, 0.25); 
+            background-color: #fff;
+        }
+        .layout-option input[type="radio"] {
+            display: none; 
+        }
+        .layout-name {
+            font-weight: 600; 
+            margin-bottom: 10px; 
+            font-size: 14px;
+            color: #343a40;
+        }
+        .layout-preview {
+            width: 130px; 
+            height: 80px;  
+            background-color: #fff; 
+            border: 1px solid #ced4da; 
+            border-radius: 4px;
+            display: flex;
+            flex-direction: column; 
+            justify-content: center; 
+            align-items: center; 
+            font-size: 10px; 
+            color: #6c757d;
+            overflow: hidden;
+            position: relative; 
+        }
+        .layout-preview .logo-placeholder,
+        .layout-preview .text-placeholder {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: #adb5bd;
+            font-weight: bold;
+            letter-spacing: 1px;
+        }
+
+        /* Layout 1 Preview: Logo à Esquerda (AJUSTADO) */
+        .layout-preview.layout1-img {
+            flex-direction: row; 
+            justify-content: flex-start;
+            align-items: center; /* Centraliza verticalmente os filhos */
+        }
+        .layout-preview.layout1-img .logo-placeholder {
+            width: 25%; /* REDUZIDO */
+            height: 75%; /* AJUSTADO */
+            background-color: #e9ecef;
+            margin: 0 5% 0 5%; /* Margem para centralizar e dar espaço */
+            writing-mode: vertical-rl;
+            transform: rotate(180deg); 
+            font-size: 8px; /* Reduzido */
+            line-height: 1;
+            letter-spacing: 0px;
+            border-radius: 2px;
+        }
+        .layout-preview.layout1-img .text-placeholder {
+            width: 60%; /* AJUSTADO para compensar */
+            height: 75%; /* AJUSTADO */
+            flex-direction: column;
+            justify-content: space-around; /* Espaça as linhas de texto simuladas */
+        }
+         .layout-preview.layout1-img .text-placeholder::before,
+         .layout-preview.layout1-img .text-placeholder::after {
+            content: "••••••••••"; 
+            display: block;
+            font-size: 12px; /* Mantido */
+            letter-spacing: -1px;
+            line-height: 1.2; /* Ajustado para melhor visualização */
+         }
+
+
+        /* Layout 2 Preview: Logo no Topo */
+         .layout-preview.layout2-img {
+            flex-direction: column; 
+            justify-content: flex-start; /* Alinha ao topo */
+            padding-top: 8px; /* Espaço no topo */
+            box-sizing: border-box;
+        }
+        .layout-preview.layout2-img .logo-placeholder {
+            width: 60%; /* Largura do logo */
+            height: 25%; /* Altura do logo */
+            background-color: #e9ecef;
+            margin-bottom: 10%; /* Espaço entre logo e texto */
+            border-radius: 2px;
+        }
+        .layout-preview.layout2-img .text-placeholder {
+            width: 80%;
+            height: 45%; /* Altura para as linhas de texto */
+            flex-direction: column;
+            justify-content: space-around;
+        }
+        .layout-preview.layout2-img .text-placeholder::before,
+        .layout-preview.layout2-img .text-placeholder::after {
+            content: "••••••••••"; 
+            display: block;
+            font-size: 12px;
+            letter-spacing: -1px;
+            line-height: 1.2;
+         }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #e7e7e7;
+            font-size: 12px;
+            color: #8a8d91;
+        }
+        .donate-link {
+            display: inline-flex; 
+            align-items: center;
+            text-decoration: none;
+            color: #0d6efd;
+            font-weight: 500;
+            margin-top: 15px;
+        }
+        .donate-link svg {
+            width: 16px;
+            height: 16px;
+            margin-right: 5px;
+            fill: currentColor;
+        }
+        .donate-link:hover {
+            text-decoration: underline;
+            color: #0b5ed7;
+        }
+    </style>
+</head>
+<body>
+    <div id="language-selector-container">
+        <label for="lang-switcher" data-translate-key="selectLanguageLabel" style="font-size: 12px; margin-right: 5px; display: inline;">Idioma:</label>
+        <select id="lang-switcher">
+            <option value="pt">Português</option>
+            <option value="en">English</option>
+            <option value="es">Español</option>
+            <option value="it">Italiano</option>
+        </select>
+    </div>
+
+    <div class="container">
+        <header>
+            <h1 data-translate-key="headerTitle">VoucherFI</h1>
+            <p data-translate-key="headerSubtitle">Dê um visual mais limpo e sofisticado aos seus vouchers Ubiquiti UniFi.</p>
+        </header>
+
+        <div class="form-section"> <label for="logo-input">
+                <span data-translate-key="logoLabel">1. Logo da Empresa (Opcional)</span>
+                <div class="tooltip">
+                    <svg class="info-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
+                    <span class="tooltiptext" data-translate-key="logoTooltip">Tamanho recomendado: aprox. 200px (largura) por 150px (altura). A imagem será redimensionada. Limite de 2MB.</span>
+                </div>
+            </label>
+            <input type="file" id="logo-input" accept="image/png, image/jpeg, image/webp">
+            <div id="logo-preview-container">
+                <img id="voucher-logo-preview" src="#" alt="Pré-visualização do Logo">
+                <span id="logo-placeholder-text" data-translate-key="logoPlaceholder">Arraste ou selecione um arquivo (max 200x150px)</span>
+            </div>
+            <img id="voucher-logo" src="#" alt="Logo para PDF" style="display:none;">
+        </div>
+
+        <div class="form-section"> <label for="ssid-input">
+                <span data-translate-key="ssidLabel">2. SSID</span>
+                <div class="tooltip">
+                    <svg class="info-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
+                    <span class="tooltiptext" data-translate-key="ssidTooltip">Nome da Rede Wi-Fi que aparecerá no voucher. Máximo de 25 caracteres.</span>
+                </div>
+            </label>
+            <input type="text" id="ssid-input" data-translate-placeholder-key="ssidPlaceholder" placeholder="Ex: Café Conectado" maxlength="25">
+            <div id="ssid-char-count" class="char-count">0/25</div>
+        </div>
+
+        <div class="form-section"> <label for="duration-input">
+                <span data-translate-key="durationLabel">3. Duração Padrão do Voucher</span>
+                <div class="tooltip">
+                     <svg class="info-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
+                    <span class="tooltiptext" data-translate-key="durationTooltip">Validade do voucher. Máximo de 20 caracteres.</span>
+                </div>
+            </label>
+            <input type="text" id="duration-input" data-translate-placeholder-key="durationPlaceholder" placeholder="Ex: 1 Hora, 24 Horas, 7 Dias" maxlength="20">
+            <div id="duration-char-count" class="char-count">0/20</div>
+        </div>
+
+        <div class="form-section"> <div class="layout-selector-label">
+                <span data-translate-key="layoutSelectorLabel">4. Escolha o Layout do Voucher:</span>
+            </div>
+            <div class="layout-options">
+                <label class="layout-option selected" for="layout1-radio" id="layout1-option">
+                    <input type="radio" id="layout1-radio" name="voucherLayout" value="layout1" checked>
+                    <span class="layout-name" data-translate-key="layout1Name">Layout 1</span>
+                    <div class="layout-preview layout1-img">
+                        <div class="logo-placeholder">LOGO</div>
+                        <div class="text-placeholder"></div>
+                    </div>
+                     <div class="tooltip" style="margin-top: 8px;">
+                        <svg class="info-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
+                        <span class="tooltiptext" data-translate-key="layout1Tooltip">Cada voucher mede 5cm (largura) x 2cm (altura). Documento A4 com 4 colunas e 14 linhas.</span>
+                    </div>
+                </label>
+                <label class="layout-option" for="layout2-radio" id="layout2-option">
+                    <input type="radio" id="layout2-radio" name="voucherLayout" value="layout2">
+                    <span class="layout-name" data-translate-key="layout2Name">Layout 2</span>
+                    <div class="layout-preview layout2-img">
+                        <div class="logo-placeholder">LOGO</div>
+                        <div class="text-placeholder"></div>
+                    </div>
+                    <div class="tooltip" style="margin-top: 8px;">
+                        <svg class="info-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
+                        <span class="tooltiptext" data-translate-key="layout2Tooltip">Cada voucher mede 6cm (largura) x 4cm (altura). Documento A4 com 3 colunas e 7 linhas.</span>
+                    </div>
+                </label>
+            </div>
+        </div>
+
+        <div class="form-section"> <label for="pdf-voucher-import">
+                <span data-translate-key="importPdfLabel">5. Importar Códigos de Voucher do PDF</span>
+                 <div class="tooltip">
+                     <svg class="info-icon" viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd" /></svg>
+                    <span class="tooltiptext" data-translate-key="importPdfTooltip">O layout gerado é baseado no formato de vouchers do UniFi Network versão 9.1.120. Máximo de 3MB por arquivo.</span>
+                </div>
+            </label>
+            <input type="file" id="pdf-voucher-import" accept=".pdf" disabled>
+            <p class="info-text" id="pdf-info-text" data-translate-key="pdfInfoTextDefault">Selecione um layout e preencha SSID e Duração para habilitar o upload do PDF.</p>
+            <div id="progress-bar-container">
+                <div id="progress-bar" data-translate-key="progressBarDefaultText">0%</div>
+            </div>
+        </div>
+        
+        <div id="status-message-container">
+             <p id="status-message" class="status-message"></p>
+        </div>
+
+        <button id="generate-pdf-button" data-translate-key="generateButtonText" disabled>VoucherFI</button>
+    </div>
+
+    <footer>
+        <span data-translate-key="footerText">V1.0 | VoucherFI Generator</span> &copy; <span id="current-year"></span>
+        <div>
+            <a href="http://link.mercadopago.com.br/rouglas" target="_blank" rel="noopener noreferrer" class="donate-link">
+                <svg viewBox="0 0 20 20" fill="currentColor"><path d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd" fill-rule="evenodd"></path></svg>
+                <span data-translate-key="donateLinkText">Apoie este projeto</span>
+            </a>
+        </div>
+    </footer>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+    <script src="readerpdf.js"></script>
+    <script src="genpdf_1.js"></script> 
+    <script src="genpdf_2.js"></script> 
+    
+    <script>
+        // --- INÍCIO LÓGICA DE TRADUÇÃO ---
+        const translations = {
+            pt: {
+                pageTitle: "VoucherFI",
+                selectLanguageLabel: "Idioma:",
+                headerTitle: "VoucherFI",
+                headerSubtitle: "Dê um visual mais limpo e sofisticado aos seus vouchers Ubiquiti UniFi.",
+                layoutSelectorLabel: "4. Escolha o Layout do Voucher:",
+                layout1Name: "Layout 1",
+                layout1Preview: "", 
+                layout1Tooltip: "Cada voucher mede 5cm (largura) x 2cm (altura). Documento A4 com 4 colunas e 14 linhas.",
+                layout2Name: "Layout 2",
+                layout2Preview: "", 
+                layout2Tooltip: "Cada voucher mede 6cm (largura) x 4cm (altura). Documento A4 com 3 colunas e 7 linhas.",
+                logoLabel: "1. Logo da Empresa (Opcional)",
+                logoTooltip: "Tamanho recomendado: aprox. 200px (largura) por 150px (altura). A imagem será redimensionada. Limite de 2MB.",
+                logoPlaceholder: "Arraste ou selecione um arquivo (max 200x150px)",
+                ssidLabel: "2. SSID",
+                ssidTooltip: "Nome da Rede Wi-Fi que aparecerá no voucher. Máximo de 25 caracteres.",
+                ssidPlaceholder: "Ex: Café Conectado",
+                durationLabel: "3. Duração Padrão do Voucher",
+                durationTooltip: "Validade do voucher. Máximo de 20 caracteres.",
+                durationPlaceholder: "Ex: 1 Hora, 24 Horas, 7 Dias",
+                importPdfLabel: "5. Importar Códigos de Voucher do PDF",
+                importPdfTooltip: "O layout gerado é baseado no formato de vouchers do UniFi Network versão 9.1.120. Máximo de 3MB por arquivo.",
+                pdfInfoTextDefault: "Selecione um layout e preencha SSID e Duração para habilitar o upload do PDF.",
+                pdfInfoTextReady: "Pronto para upload do PDF. Todos os códigos válidos serão extraídos.",
+                progressBarDefaultText: "0%",
+                generateButtonText: "VoucherFI",
+                footerText: "V1.0 | VoucherFI Generator",
+                donateLinkText: "Apoie este projeto",
+                statusReadingPDF: "Lendo PDF...",
+                statusProcessingCodes: "Processando códigos do PDF...",
+                statusXCodesExtracted: (count) => `${count} código(s) extraído(s) do PDF com sucesso.`,
+                statusNoCodesFound: "Nenhum código de voucher no formato esperado foi encontrado no PDF.",
+                statusErrorReadingPDF: (message) => `Erro ao ler o PDF: ${message}`,
+                statusGeneratingSheet: (count) => `Gerando folha de PDF com ${count} voucher(s)...`,
+                statusSheetGenerated: (count) => `Folha de PDF com ${count} voucher(s) gerada com sucesso!`,
+                statusErrorGeneratingPDF: (message) => `Erro ao gerar a folha de PDF: ${message}`,
+                statusCritialErrorPDFJS: "Erro crítico: Biblioteca PDF.js não carregada.",
+                statusCritialErrorGenerator: "Erro crítico: Função de geração de PDF não encontrada. Verifique o console (F12).",
+                statusLogoTooLarge: "Arquivo de logo muito grande! (Máx 2MB)",
+                statusPdfTooLarge: (maxSize) => `Arquivo PDF muito grande! (Máx ${maxSize}MB)`,
+                statusPleaseImportPDF: "Por favor, importe um PDF com códigos de voucher primeiro.",
+                statusPleaseEnterSSID: "Por favor, insira o SSID (Nome da Rede).",
+                statusPleaseEnterDuration: "Por favor, insira a Duração do Voucher.",
+                progressBarErrorText: "Erro",
+                statusLayoutNotSelected: "Por favor, selecione um layout para o voucher."
+            },
+            en: { 
+                pageTitle: "VoucherFI",
+                selectLanguageLabel: "Language:",
+                headerTitle: "VoucherFI",
+                headerSubtitle: "Give your Ubiquiti UniFi vouchers a cleaner, more sophisticated look.",
+                layoutSelectorLabel: "4. Choose Voucher Layout:",
+                layout1Name: "Layout 1",
+                layout1Preview: "",
+                layout1Tooltip: "Each voucher measures 5cm (width) x 2cm (height). A4 document has 4 columns and 14 rows.",
+                layout2Name: "Layout 2",
+                layout2Preview: "",
+                layout2Tooltip: "Each voucher measures 6cm (width) x 4cm (height). A4 document has 3 columns and 7 rows.",
+                logoLabel: "1. Company Logo (Optional)",
+                logoTooltip: "Recommended size: approx. 200px (width) by 150px (height). Image will be resized. 2MB limit.",
+                logoPlaceholder: "Drag or select a file (max 200x150px)",
+                ssidLabel: "2. SSID",
+                ssidTooltip: "Wi-Fi Network Name on voucher. Max 25 characters.",
+                ssidPlaceholder: "Ex: Connected Cafe",
+                durationLabel: "3. Default Voucher Duration",
+                durationTooltip: "Voucher validity. Max 20 characters.",
+                durationPlaceholder: "Ex: 1 Hour, 24 Hours, 7 Days",
+                importPdfLabel: "5. Import Voucher Codes from PDF",
+                importPdfTooltip: "Generated layout based on UniFi Network v9.1.120. Max 3MB per file.",
+                pdfInfoTextDefault: "Select a layout, fill SSID & Duration to enable PDF upload.",
+                pdfInfoTextReady: "Ready for PDF upload. All valid codes will be extracted.",
+                progressBarDefaultText: "0%",
+                generateButtonText: "VoucherFI",
+                footerText: "V1.0 | VoucherFI Generator",
+                donateLinkText: "Support this project",
+                statusReadingPDF: "Reading PDF...",
+                statusProcessingCodes: "Processing PDF codes...",
+                statusXCodesExtracted: (count) => `${count} code(s) successfully extracted.`,
+                statusNoCodesFound: "No voucher codes in the expected format found in PDF.",
+                statusErrorReadingPDF: (message) => `Error reading PDF: ${message}`,
+                statusGeneratingSheet: (count) => `Generating PDF sheet with ${count} voucher(s)...`,
+                statusSheetGenerated: (count) => `PDF sheet with ${count} voucher(s) generated successfully!`,
+                statusErrorGeneratingPDF: (message) => `Error generating PDF: ${message}`,
+                statusCritialErrorPDFJS: "Critical error: PDF.js library not loaded.",
+                statusCritialErrorGenerator: "Critical error: PDF generation function not found. Check console (F12).",
+                statusLogoTooLarge: "Logo file too large! (Max 2MB)",
+                statusPdfTooLarge: (maxSize) => `PDF file too large! (Max ${maxSize}MB)`,
+                statusPleaseImportPDF: "Please import a PDF with voucher codes first.",
+                statusPleaseEnterSSID: "Please enter the SSID.",
+                statusPleaseEnterDuration: "Please enter the Voucher Duration.",
+                progressBarErrorText: "Error",
+                statusLayoutNotSelected: "Please select a voucher layout."
+            },
+            es: { 
+                pageTitle: "VoucherFI",
+                selectLanguageLabel: "Idioma:",
+                headerTitle: "VoucherFI",
+                headerSubtitle: "Dé a sus vales Ubiquiti UniFi un aspecto más limpio y sofisticado.",
+                layoutSelectorLabel: "4. Elija el Diseño del Vale:",
+                layout1Name: "Diseño 1",
+                layout1Preview: "",
+                layout1Tooltip: "Cada vale mide 5cm (ancho) x 2cm (alto). Documento A4 con 4 columnas y 14 filas.",
+                layout2Name: "Diseño 2",
+                layout2Preview: "",
+                layout2Tooltip: "Cada vale mide 6cm (ancho) x 4cm (alto). Documento A4 con 3 columnas y 7 filas.",
+                logoLabel: "1. Logo de la Empresa (Opcional)",
+                logoTooltip: "Tamaño recomendado: aprox. 200px (ancho) por 150px (alto). La imagen será redimensionada. Límite 2MB.",
+                logoPlaceholder: "Arrastre o seleccione un archivo (máx 200x150px)",
+                ssidLabel: "2. SSID",
+                ssidTooltip: "Nombre de la Red Wi-Fi en el vale. Máx 25 caracteres.",
+                ssidPlaceholder: "Ej: Café Conectado",
+                durationLabel: "3. Duración Estándar del Vale",
+                durationTooltip: "Validez del vale. Máx 20 caracteres.",
+                durationPlaceholder: "Ej: 1 Hora, 24 Horas, 7 Días",
+                importPdfLabel: "5. Importar Códigos de Vale desde PDF",
+                importPdfTooltip: "Diseño basado en UniFi Network v9.1.120. Máx 3MB por archivo.",
+                pdfInfoTextDefault: "Seleccione diseño, complete SSID y Duración para cargar PDF.",
+                pdfInfoTextReady: "Listo para cargar PDF. Se extraerán todos los códigos.",
+                progressBarDefaultText: "0%",
+                generateButtonText: "VoucherFI",
+                footerText: "V1.0 | VoucherFI Generator",
+                donateLinkText: "Apoya este proyecto",
+                statusReadingPDF: "Leyendo PDF...",
+                statusProcessingCodes: "Procesando códigos...",
+                statusXCodesExtracted: (count) => `${count} código(s) extraído(s) con éxito.`,
+                statusNoCodesFound: "No se encontraron códigos en el PDF.",
+                statusErrorReadingPDF: (message) => `Error leyendo PDF: ${message}`,
+                statusGeneratingSheet: (count) => `Generando hoja PDF con ${count} vale(s)...`,
+                statusSheetGenerated: (count) => `¡Hoja PDF con ${count} vale(s) generada!`,
+                statusErrorGeneratingPDF: (message) => `Error generando PDF: ${message}`,
+                statusCritialErrorPDFJS: "Error crítico: PDF.js no cargado.",
+                statusCritialErrorGenerator: "Error crítico: Función de PDF no encontrada. Revise consola (F12).",
+                statusLogoTooLarge: "¡Logo muy grande! (Máx 2MB)",
+                statusPdfTooLarge: (maxSize) => `¡PDF muy grande! (Máx ${maxSize}MB)`,
+                statusPleaseImportPDF: "Importe un PDF con códigos primero.",
+                statusPleaseEnterSSID: "Ingrese el SSID.",
+                statusPleaseEnterDuration: "Ingrese la Duración.",
+                progressBarErrorText: "Error",
+                statusLayoutNotSelected: "Seleccione un diseño de vale."
+            },
+            it: { 
+                pageTitle: "VoucherFI",
+                selectLanguageLabel: "Lingua:",
+                headerTitle: "VoucherFI",
+                headerSubtitle: "Dai ai tuoi voucher Ubiquiti UniFi un aspetto più pulito e sofisticato.",
+                layoutSelectorLabel: "4. Scegli Layout Voucher:",
+                layout1Name: "Layout 1",
+                layout1Preview: "",
+                layout1Tooltip: "Ogni voucher misura 5cm (larghezza) x 2cm (altezza). Documento A4 con 4 colonne e 14 file.",
+                layout2Name: "Layout 2",
+                layout2Preview: "",
+                layout2Tooltip: "Ogni voucher misura 6cm (larghezza) x 4cm (altezza). Documento A4 con 3 colonne e 7 file.",
+                logoLabel: "1. Logo Aziendale (Opzionale)",
+                logoTooltip: "Dimensioni raccomandate: circa 200px (largh.) per 150px (alt.). L'immagine sarà ridimensionata. Limite 2MB.",
+                logoPlaceholder: "Trascina o seleziona un file (max 200x150px)",
+                ssidLabel: "2. SSID",
+                ssidTooltip: "Nome Rete Wi-Fi sul voucher. Max 25 caratteri.",
+                ssidPlaceholder: "Es: Caffè Connesso",
+                durationLabel: "3. Durata Standard Voucher",
+                durationTooltip: "Validità voucher. Max 20 caratteri.",
+                durationPlaceholder: "Es: 1 Ora, 24 Ore, 7 Giorni",
+                importPdfLabel: "5. Importa Codici Voucher da PDF",
+                importPdfTooltip: "Layout basato su UniFi Network v9.1.120. Max 3MB per file.",
+                pdfInfoTextDefault: "Seleziona layout, compila SSID e Durata per caricare PDF.",
+                pdfInfoTextReady: "Pronto per caricare PDF. Tutti i codici validi saranno estratti.",
+                progressBarDefaultText: "0%",
+                generateButtonText: "VoucherFI",
+                footerText: "V1.0 | VoucherFI Generator",
+                donateLinkText: "Sostieni questo progetto",
+                statusReadingPDF: "Lettura PDF...",
+                statusProcessingCodes: "Elaborazione codici...",
+                statusXCodesExtracted: (count) => `${count} codice/i estratto/i con successo.`,
+                statusNoCodesFound: "Nessun codice voucher trovato nel PDF.",
+                statusErrorReadingPDF: (message) => `Errore lettura PDF: ${message}`,
+                statusGeneratingSheet: (count) => `Generazione foglio PDF con ${count} voucher...`,
+                statusSheetGenerated: (count) => `Foglio PDF con ${count} voucher generato!`,
+                statusErrorGeneratingPDF: (message) => `Errore generazione PDF: ${message}`,
+                statusCritialErrorPDFJS: "Errore critico: Libreria PDF.js non caricata.",
+                statusCritialErrorGenerator: "Errore critico: Funzione PDF non trovata. Controlla console (F12).",
+                statusLogoTooLarge: "File logo troppo grande! (Max 2MB)",
+                statusPdfTooLarge: (maxSize) => `File PDF troppo grande! (Max ${maxSize}MB)`,
+                statusPleaseImportPDF: "Importa prima un PDF con i codici.",
+                statusPleaseEnterSSID: "Inserisci l'SSID.",
+                statusPleaseEnterDuration: "Inserisci la Durata.",
+                progressBarErrorText: "Errore",
+                statusLayoutNotSelected: "Seleziona un layout voucher."
+            }
+        };
+
+        // --- O restante do JavaScript continua aqui ---
+        const langSwitcher = document.getElementById('lang-switcher');
+        
+        function applyLanguage(lang) {
+            if (!translations[lang]) {
+                console.warn(`Idioma '${lang}' não encontrado nas traduções.`);
+                lang = 'pt'; 
+            }
+            document.documentElement.lang = lang; 
+            document.title = translations[lang].pageTitle;
+
+            document.querySelectorAll('[data-translate-key]').forEach(element => {
+                const key = element.getAttribute('data-translate-key');
+                if (translations[lang][key] !== undefined) {
+                    if (typeof translations[lang][key] === 'function') {
+                        if (key === 'progressBarDefaultText' && element.id === 'progress-bar') { 
+                             element.textContent = translations[lang][key](); 
+                        }
+                    } else {
+                        element.textContent = translations[lang][key];
+                    }
+                }
+            });
+            document.querySelectorAll('[data-translate-placeholder-key]').forEach(element => {
+                const key = element.getAttribute('data-translate-placeholder-key');
+                 if (translations[lang][key] !== undefined) {
+                    element.placeholder = translations[lang][key];
+                }
+            });
+            checkEnablePdfUpload(true); 
+        }
+
+        langSwitcher.addEventListener('change', (event) => {
+            const selectedLang = event.target.value;
+            localStorage.setItem('fitVoucherLang', selectedLang);
+            applyLanguage(selectedLang);
+        });
+
+        function getInitialLanguage() {
+            const savedLang = localStorage.getItem('fitVoucherLang');
+            if (savedLang && translations[savedLang]) {
+                return savedLang;
+            }
+            const browserLang = navigator.language.split('-')[0];
+            if (translations[browserLang]) {
+                return browserLang;
+            }
+            return 'pt'; 
+        }
+
+        const logoInput = document.getElementById('logo-input');
+        const logoPreview = document.getElementById('voucher-logo-preview');
+        const logoPlaceholderText = document.getElementById('logo-placeholder-text');
+        const logoPreviewContainer = document.getElementById('logo-preview-container');
+        const logoForPdf = document.getElementById('voucher-logo');
+        
+        const ssidInput = document.getElementById('ssid-input');
+        const durationInput = document.getElementById('duration-input');
+        const pdfImportInput = document.getElementById('pdf-voucher-import');
+        const pdfInfoText = document.getElementById('pdf-info-text');
+        
+        const generatePdfButton = document.getElementById('generate-pdf-button');
+        const statusMessage = document.getElementById('status-message');
+
+        const progressBarContainer = document.getElementById('progress-bar-container');
+        const progressBar = document.getElementById('progress-bar');
+
+        const ssidCharCount = document.getElementById('ssid-char-count');
+        const durationCharCount = document.getElementById('duration-char-count');
+
+        let extractedVouchers = []; 
+        const MAX_PDF_SIZE_MB = 3;
+        const MAX_PDF_SIZE_BYTES = MAX_PDF_SIZE_MB * 1024 * 1024;
+
+        const layoutRadios = document.querySelectorAll('input[name="voucherLayout"]');
+        let selectedLayout = 'layout1'; 
+
+        layoutRadios.forEach(radio => {
+            radio.addEventListener('change', function() {
+                selectedLayout = this.value;
+                document.querySelectorAll('.layout-option').forEach(opt => opt.classList.remove('selected'));
+                this.parentElement.classList.add('selected'); 
+                checkEnablePdfUpload(true); 
+                 console.log("Layout selecionado:", selectedLayout);
+            });
+        });
+
+
+        if (typeof pdfjsLib !== 'undefined') {
+            pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
+        } else {
+            console.error("PDF.js (pdfjsLib) não foi carregado.");
+            const currentLang = getInitialLanguage(); 
+            displayStatus("statusCritialErrorPDFJS", "error");
+        }
+
+        document.getElementById('current-year').textContent = new Date().getFullYear();
+
+        function displayStatus(messageKey, type = "processing", ...args) {
+            const currentLang = langSwitcher.value || getInitialLanguage();
+            let message = translations[currentLang][messageKey] || messageKey; 
+            if (typeof message === 'function') {
+                message = message(...args);
+            }
+            statusMessage.textContent = message;
+            statusMessage.className = 'status-message ' + type; 
+            statusMessage.style.display = 'block';
+        }
+        
+        function updateCharCount(inputElement, countElement, maxLength) {
+            const currentLength = inputElement.value.length;
+            countElement.textContent = `${currentLength}/${maxLength}`;
+        }
+
+        ssidInput.addEventListener('input', () => {
+            updateCharCount(ssidInput, ssidCharCount, 25);
+            checkEnablePdfUpload();
+        });
+        durationInput.addEventListener('input', () => {
+            updateCharCount(durationInput, durationCharCount, 20);
+            checkEnablePdfUpload();
+        });
+        
+        function checkEnablePdfUpload(forceTextUpdate = false) {
+            const currentLang = langSwitcher.value || getInitialLanguage();
+            if (selectedLayout && ssidInput.value.trim() !== "" && durationInput.value.trim() !== "") {
+                pdfImportInput.disabled = false;
+                if (forceTextUpdate || pdfInfoText.getAttribute('data-current-key') !== 'pdfInfoTextReady') {
+                    pdfInfoText.textContent = translations[currentLang].pdfInfoTextReady;
+                    pdfInfoText.setAttribute('data-current-key', 'pdfInfoTextReady');
+                }
+            } else {
+                pdfImportInput.disabled = true;
+                pdfImportInput.value = ''; 
+                extractedVouchers = []; 
+                generatePdfButton.disabled = true; 
+                if (forceTextUpdate || pdfInfoText.getAttribute('data-current-key') !== 'pdfInfoTextDefault') {
+                    pdfInfoText.textContent = translations[currentLang].pdfInfoTextDefault; 
+                    pdfInfoText.setAttribute('data-current-key', 'pdfInfoTextDefault');
+                }
+                 statusMessage.style.display = 'none'; 
+            }
+        }
+        
+        updateCharCount(ssidInput, ssidCharCount, 25);
+        updateCharCount(durationInput, durationCharCount, 20);
+        
+        const initialLang = getInitialLanguage();
+        langSwitcher.value = initialLang;
+        applyLanguage(initialLang); 
+
+        logoInput.addEventListener('change', function(event) {
+            const currentLang = langSwitcher.value || getInitialLanguage();
+            const file = event.target.files[0];
+            if (file) {
+                if (file.size > 2 * 1024 * 1024) { 
+                    displayStatus("statusLogoTooLarge", "error");
+                    logoInput.value = ''; 
+                    return;
+                }
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    logoPreview.src = e.target.result;
+                    logoForPdf.src = e.target.result; 
+                    logoPreview.style.display = 'block';
+                    logoPlaceholderText.style.display = 'none';
+                    logoPreviewContainer.classList.add('has-image');
+                }
+                reader.readAsDataURL(file);
+            } else {
+                logoPreview.src = '#';
+                logoForPdf.src = '#';
+                logoPreview.style.display = 'none';
+                logoPlaceholderText.style.display = 'block';
+                logoPreviewContainer.classList.remove('has-image');
+            }
+        });
+
+        pdfImportInput.addEventListener('change', async function(event) {
+            const currentLang = langSwitcher.value || getInitialLanguage();
+            const file = event.target.files[0];
+            extractedVouchers = []; 
+            statusMessage.style.display = 'none';
+            generatePdfButton.disabled = true; 
+
+            if (file) {
+                if (file.size > MAX_PDF_SIZE_BYTES) {
+                    displayStatus("statusPdfTooLarge", "error", MAX_PDF_SIZE_MB);
+                    pdfImportInput.value = ''; 
+                    return;
+                }
+
+                displayStatus("statusReadingPDF", "processing");
+                progressBarContainer.style.display = 'block';
+                progressBar.style.width = '10%'; 
+                progressBar.textContent = '10%';
+
+                try {
+                    await new Promise(res => setTimeout(res, 100)); 
+                    displayStatus("statusProcessingCodes", "processing");
+                    progressBar.style.width = '30%'; 
+                    progressBar.textContent = '30%';
+
+                    const codes = await window.voucherCodeReader.lerCodigosDoPDF(file);
+                    extractedVouchers = codes; 
+
+                    progressBar.style.width = '100%';
+                    progressBar.textContent = '100%';
+
+                    if (codes && codes.length > 0) {
+                        displayStatus("statusXCodesExtracted", "success", codes.length);
+                        generatePdfButton.disabled = false; 
+                    } else {
+                        displayStatus('statusNoCodesFound', "error");
+                    }
+                } catch (error) {
+                    progressBar.style.width = '100%'; 
+                    progressBar.style.backgroundColor = '#dc3545'; 
+                    progressBar.textContent = translations[currentLang].progressBarErrorText || "Error";
+                    displayStatus('statusErrorReadingPDF', "error", error.message);
+                    console.error(error);
+                } finally {
+                    setTimeout(() => {
+                        progressBarContainer.style.display = 'none';
+                        progressBar.style.backgroundColor = '#1877f2'; 
+                        progressBar.textContent = translations[currentLang].progressBarDefaultText || "0%"; 
+                    }, 3000); 
+                }
+            }
+        });
+        
+        generatePdfButton.addEventListener('click', async function() {
+            const currentLang = langSwitcher.value || getInitialLanguage();
+            const ssid = ssidInput.value.trim();
+            const duration = durationInput.value.trim();
+            
+            if (!selectedLayout) { 
+                displayStatus("statusLayoutNotSelected", "error");
+                return;
+            }
+            if (extractedVouchers.length === 0) {
+                displayStatus('statusPleaseImportPDF', "error");
+                pdfImportInput.focus();
+                return;
+            }
+            if (!ssid) {
+                displayStatus('statusPleaseEnterSSID', "error");
+                ssidInput.focus();
+                return;
+            }
+            if (!duration) {
+                displayStatus('statusPleaseEnterDuration', "error");
+                durationInput.focus();
+                return;
+            }
+
+            const commonVoucherData = {
+                ssid: ssid,
+                duration: duration
+            };
+
+            displayStatus('statusGeneratingSheet', "processing", extractedVouchers.length);
+            
+            try {
+                let pdfGeneratorFunction;
+                if (selectedLayout === 'layout1') {
+                    if (window.voucherGenerator && typeof window.voucherGenerator.gerarFolhaDeVouchersPDF_Layout1 === 'function') {
+                        pdfGeneratorFunction = window.voucherGenerator.gerarFolhaDeVouchersPDF_Layout1;
+                    } else {
+                         console.error("Erro: Função para Layout 1 (gerarFolhaDeVouchersPDF_Layout1) não encontrada!", window.voucherGenerator);
+                         displayStatus("statusCritialErrorGenerator", "error");
+                         return;
+                    }
+                } else if (selectedLayout === 'layout2') {
+                    if (window.voucherGenerator && typeof window.voucherGenerator.gerarFolhaDeVouchersPDF_Layout2 === 'function') {
+                        pdfGeneratorFunction = window.voucherGenerator.gerarFolhaDeVouchersPDF_Layout2;
+                    } else {
+                         console.error("Erro: Função para Layout 2 (gerarFolhaDeVouchersPDF_Layout2) não encontrada!", window.voucherGenerator);
+                         displayStatus("statusCritialErrorGenerator", "error");
+                         return;
+                    }
+                }
+
+                await pdfGeneratorFunction(extractedVouchers, commonVoucherData, 'voucher-logo');
+                displayStatus('statusSheetGenerated', "success", extractedVouchers.length);
+
+            } catch (error) {
+                displayStatus('statusErrorGeneratingPDF', "error", error.message);
+                console.error("Erro na geração da folha de PDF:", error);
+            }
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,90 @@
+body {
+    font-family: sans-serif;
+    line-height: 1.6;
+    margin: 0;
+    padding: 20px;
+    background-color: #f4f4f4;
+    color: #333;
+}
+
+header {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+header h1 {
+    color: #0056b3; /* Exemplo de cor */
+}
+
+main {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+textarea#voucher-input {
+    width: calc(100% - 22px); /* Ajusta padding/border */
+    min-height: 100px;
+    margin-bottom: 10px;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+}
+
+button {
+    background-color: #007bff;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    margin-top: 10px;
+}
+
+button:hover {
+    background-color: #0056b3;
+}
+
+#input-section, #output-section {
+    margin-bottom: 30px;
+}
+
+.voucher-display {
+    border: 1px solid #ddd;
+    padding: 15px;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+}
+
+.voucher-display p {
+    display: flex; /* Para alinhar ícone e texto */
+    align-items: center; /* Alinhamento vertical */
+    margin: 10px 0;
+}
+
+/* Estilizando os ícones SVG diretamente */
+.icon {
+    width: 20px;  /* Tamanho ajustado */
+    height: 20px; /* Tamanho ajustado */
+    margin-right: 10px;
+    stroke: #007bff; /* Cor da linha do ícone - ajuste conforme o SVG */
+    /* fill: #007bff; */ /* Cor do preenchimento - use se o ícone for preenchido */
+}
+
+/* Se precisar de estilos específicos para um ícone */
+.icon-tabler-key {
+    stroke: #28a745; /* Exemplo: chave verde */
+}
+.icon-tabler-clock-hour-3 {
+    stroke: #ffc107; /* Exemplo: relógio amarelo */
+}
+
+/* Estilos para o logo no voucher gerado */
+#voucher-logo {
+    display: block; /* Para centralizar com margin auto se necessário */
+    margin: 0 auto 15px auto; /* Centraliza e adiciona margem inferior */
+    max-height: 80px; /* Limita a altura do logo */
+    width: auto; /* Mantém a proporção */
+}
