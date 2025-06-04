@@ -43,11 +43,20 @@
             padding-bottom: 25px;
             border-bottom: 1px solid #e7e7e7; 
         }
-        header h1 { 
+        /* Removed header h1 styles as it's replaced by an image */
+        /* header h1 { 
             color: #0d6efd; 
             margin-bottom: 10px; 
             font-size: 30px; 
             font-weight: 700;
+        } */
+        #voucherfi-logo-header { /* Style for the new header logo */
+            width: 250px;
+            height: 75px;
+            margin-bottom: 10px; 
+            display: block; 
+            margin-left: auto;
+            margin-right: auto;
         }
         header p { 
             color: #555; 
@@ -276,6 +285,7 @@
             flex-direction: column;
             align-items: center;
             background-color: #f8f9fa; 
+            box-sizing: border-box; /* Added for consistent sizing */
         }
         .layout-option:hover {
             border-color: #adb5bd; 
@@ -323,53 +333,53 @@
         .layout-preview.layout1-img {
             flex-direction: row; 
             justify-content: flex-start;
-            align-items: center; /* Centraliza verticalmente os filhos */
+            align-items: center; 
         }
         .layout-preview.layout1-img .logo-placeholder {
-            width: 25%; /* REDUZIDO */
-            height: 75%; /* AJUSTADO */
+            width: 25%; 
+            height: 75%; 
             background-color: #e9ecef;
-            margin: 0 5% 0 5%; /* Margem para centralizar e dar espaço */
+            margin: 0 5% 0 5%; 
             writing-mode: vertical-rl;
             transform: rotate(180deg); 
-            font-size: 8px; /* Reduzido */
+            font-size: 8px; 
             line-height: 1;
             letter-spacing: 0px;
             border-radius: 2px;
         }
         .layout-preview.layout1-img .text-placeholder {
-            width: 60%; /* AJUSTADO para compensar */
-            height: 75%; /* AJUSTADO */
+            width: 60%; 
+            height: 75%; 
             flex-direction: column;
-            justify-content: space-around; /* Espaça as linhas de texto simuladas */
+            justify-content: space-around; 
         }
          .layout-preview.layout1-img .text-placeholder::before,
          .layout-preview.layout1-img .text-placeholder::after {
             content: "••••••••••"; 
             display: block;
-            font-size: 12px; /* Mantido */
+            font-size: 12px; 
             letter-spacing: -1px;
-            line-height: 1.2; /* Ajustado para melhor visualização */
+            line-height: 1.2; 
          }
 
 
         /* Layout 2 Preview: Logo no Topo */
          .layout-preview.layout2-img {
             flex-direction: column; 
-            justify-content: flex-start; /* Alinha ao topo */
-            padding-top: 8px; /* Espaço no topo */
+            justify-content: flex-start; 
+            padding-top: 8px; 
             box-sizing: border-box;
         }
         .layout-preview.layout2-img .logo-placeholder {
-            width: 60%; /* Largura do logo */
-            height: 25%; /* Altura do logo */
+            width: 60%; 
+            height: 25%; 
             background-color: #e9ecef;
-            margin-bottom: 10%; /* Espaço entre logo e texto */
+            margin-bottom: 10%; 
             border-radius: 2px;
         }
         .layout-preview.layout2-img .text-placeholder {
             width: 80%;
-            height: 45%; /* Altura para as linhas de texto */
+            height: 45%; 
             flex-direction: column;
             justify-content: space-around;
         }
@@ -408,6 +418,57 @@
             text-decoration: underline;
             color: #0b5ed7;
         }
+
+        /* Style for the new Rouglas footer logo */
+        #rouglas-logo-footer {
+            width: 100px;
+            height: 50px;
+            transition: filter 0.3s ease-in-out;
+        }
+        #rouglas-logo-footer:hover {
+            filter: grayscale(80%) brightness(120%); /* Effect to make it light gray */
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 680px) {
+            .layout-options {
+                flex-direction: column; /* Stack options vertically */
+                align-items: stretch;   /* Make children stretch to full width */
+                gap: 15px;
+            }
+            .layout-option {
+                flex-basis: auto; /* Reset flex-basis */
+                width: 100%;      /* Take full available width */
+            }
+            .container {
+                 padding: 20px 20px 30px 20px; /* Reduce horizontal padding */
+            }
+        }
+
+        @media (max-width: 480px) { /* Further adjustments for smaller screens */
+            header #voucherfi-logo-header {
+                width: 200px; /* Adjust logo size */
+                height: auto; /* Maintain aspect ratio */
+            }
+            header p {
+                font-size: 14px;
+            }
+            .container {
+                padding: 15px 15px 20px 15px;
+            }
+            input[type="text"],
+            input[type="file"],
+            button#generate-pdf-button {
+                font-size: 13px; /* Slightly smaller font in form elements */
+            }
+            .layout-preview { /* Make layout previews a bit smaller */
+                width: 100px;
+                height: 60px;
+            }
+             .tooltip .tooltiptext { /* Adjust tooltip width on small screens */
+                width: 200px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -423,7 +484,7 @@
 
     <div class="container">
         <header>
-            <h1 data-translate-key="headerTitle">VoucherFI</h1>
+            <img id="voucherfi-logo-header" src="/logo.svg" alt="VoucherFI Logo" />
             <p data-translate-key="headerSubtitle">Dê um visual mais limpo e sofisticado aos seus vouchers Ubiquiti UniFi.</p>
         </header>
 
@@ -517,11 +578,16 @@
     </div>
 
     <footer>
-        <span data-translate-key="footerText">V1.0 | VoucherFI Generator</span> &copy; <span id="current-year"></span>
+        <span data-translate-key="footerText">V1.0 | VoucherFI</span> &copy; <span id="current-year"></span>
         <div>
             <a href="http://link.mercadopago.com.br/rouglas" target="_blank" rel="noopener noreferrer" class="donate-link">
                 <svg viewBox="0 0 20 20" fill="currentColor"><path d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd" fill-rule="evenodd"></path></svg>
                 <span data-translate-key="donateLinkText">Apoie este projeto</span>
+            </a>
+        </div>
+        <div style="margin-top: 15px;">
+            <a href="https://rouglas.com" target="_blank" rel="noopener noreferrer">
+                <img src="/rouglaslogo.svg" alt="Rouglas Logo" id="rouglas-logo-footer">
             </a>
         </div>
     </footer>
@@ -540,7 +606,7 @@
             pt: {
                 pageTitle: "VoucherFI",
                 selectLanguageLabel: "Idioma:",
-                headerTitle: "VoucherFI",
+                // headerTitle: "VoucherFI", // Title is now an image
                 headerSubtitle: "Dê um visual mais limpo e sofisticado aos seus vouchers Ubiquiti UniFi.",
                 layoutSelectorLabel: "4. Escolha o Layout do Voucher:",
                 layout1Name: "Layout 1",
@@ -564,7 +630,7 @@
                 pdfInfoTextReady: "Pronto para upload do PDF. Todos os códigos válidos serão extraídos.",
                 progressBarDefaultText: "0%",
                 generateButtonText: "VoucherFI",
-                footerText: "V1.0 | VoucherFI Generator",
+                footerText: "V1.0 | VoucherFI",
                 donateLinkText: "Apoie este projeto",
                 statusReadingPDF: "Lendo PDF...",
                 statusProcessingCodes: "Processando códigos do PDF...",
@@ -587,7 +653,7 @@
             en: { 
                 pageTitle: "VoucherFI",
                 selectLanguageLabel: "Language:",
-                headerTitle: "VoucherFI",
+                // headerTitle: "VoucherFI", // Title is now an image
                 headerSubtitle: "Give your Ubiquiti UniFi vouchers a cleaner, more sophisticated look.",
                 layoutSelectorLabel: "4. Choose Voucher Layout:",
                 layout1Name: "Layout 1",
@@ -611,7 +677,7 @@
                 pdfInfoTextReady: "Ready for PDF upload. All valid codes will be extracted.",
                 progressBarDefaultText: "0%",
                 generateButtonText: "VoucherFI",
-                footerText: "V1.0 | VoucherFI Generator",
+                footerText: "V1.0 | VoucherFI",
                 donateLinkText: "Support this project",
                 statusReadingPDF: "Reading PDF...",
                 statusProcessingCodes: "Processing PDF codes...",
@@ -634,7 +700,7 @@
             es: { 
                 pageTitle: "VoucherFI",
                 selectLanguageLabel: "Idioma:",
-                headerTitle: "VoucherFI",
+                // headerTitle: "VoucherFI", // Title is now an image
                 headerSubtitle: "Dé a sus vales Ubiquiti UniFi un aspecto más limpio y sofisticado.",
                 layoutSelectorLabel: "4. Elija el Diseño del Vale:",
                 layout1Name: "Diseño 1",
@@ -658,7 +724,7 @@
                 pdfInfoTextReady: "Listo para cargar PDF. Se extraerán todos los códigos.",
                 progressBarDefaultText: "0%",
                 generateButtonText: "VoucherFI",
-                footerText: "V1.0 | VoucherFI Generator",
+                footerText: "V1.0 | VoucherFI",
                 donateLinkText: "Apoya este proyecto",
                 statusReadingPDF: "Leyendo PDF...",
                 statusProcessingCodes: "Procesando códigos...",
@@ -681,7 +747,7 @@
             it: { 
                 pageTitle: "VoucherFI",
                 selectLanguageLabel: "Lingua:",
-                headerTitle: "VoucherFI",
+                // headerTitle: "VoucherFI", // Title is now an image
                 headerSubtitle: "Dai ai tuoi voucher Ubiquiti UniFi un aspetto più pulito e sofisticato.",
                 layoutSelectorLabel: "4. Scegli Layout Voucher:",
                 layout1Name: "Layout 1",
@@ -705,7 +771,7 @@
                 pdfInfoTextReady: "Pronto per caricare PDF. Tutti i codici validi saranno estratti.",
                 progressBarDefaultText: "0%",
                 generateButtonText: "VoucherFI",
-                footerText: "V1.0 | VoucherFI Generator",
+                footerText: "V1.0 | VoucherFI",
                 donateLinkText: "Sostieni questo progetto",
                 statusReadingPDF: "Lettura PDF...",
                 statusProcessingCodes: "Elaborazione codici...",
@@ -740,10 +806,20 @@
 
             document.querySelectorAll('[data-translate-key]').forEach(element => {
                 const key = element.getAttribute('data-translate-key');
+                // Skip headerTitle as it's an image now
+                if (key === 'headerTitle' && element.tagName === 'H1') { // Check if it's the H1 specifically, though it's removed.
+                    return; 
+                }
                 if (translations[lang][key] !== undefined) {
                     if (typeof translations[lang][key] === 'function') {
+                        // Special handling for functions, e.g., progress bar text
                         if (key === 'progressBarDefaultText' && element.id === 'progress-bar') { 
                              element.textContent = translations[lang][key](); 
+                        } else if (key.startsWith('status')) { // For dynamic status messages if they are ever directly in HTML
+                            // This part might not be strictly necessary if displayStatus is always used
+                        } else {
+                             // Default behavior for function-based translations if not handled above
+                             // element.textContent = translations[lang][key](); // Or pass appropriate args
                         }
                     } else {
                         element.textContent = translations[lang][key];
@@ -819,8 +895,9 @@
             pdfjsLib.GlobalWorkerOptions.workerSrc = 'https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.16.105/pdf.worker.min.js';
         } else {
             console.error("PDF.js (pdfjsLib) não foi carregado.");
-            const currentLang = getInitialLanguage(); 
-            displayStatus("statusCritialErrorPDFJS", "error");
+            // displayStatus relies on translations which might not be fully set up if this fails early.
+            // Fallback to a simple alert or ensure translations for critical errors are always available.
+            setTimeout(() => displayStatus("statusCritialErrorPDFJS", "error"), 0);
         }
 
         document.getElementById('current-year').textContent = new Date().getFullYear();
@@ -951,7 +1028,7 @@
                 } finally {
                     setTimeout(() => {
                         progressBarContainer.style.display = 'none';
-                        progressBar.style.backgroundColor = '#1877f2'; 
+                        progressBar.style.backgroundColor = '#0d6efd'; 
                         progressBar.textContent = translations[currentLang].progressBarDefaultText || "0%"; 
                     }, 3000); 
                 }
